@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import FormStep1 from './components/FormStep1.jsx';
-import FormStep2 from './components/FormStep2.jsx';
-import ProgressTracker from './components/ProgressTracker.jsx';
-import './index.css';
+import ProgressTracker from './components/ProgressTracker';
+import FormStep1 from './components/FormStep1';
+import FormStep2 from './components/FormStep2';
 
 function App() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -42,6 +41,25 @@ function App() {
     return Object.keys(stepErrors).length === 0;
   };
 
+  const validateAllFields = () => {
+    if (!schema) return false;
+    let allErrors = {};
+    const allFields = [...schema.step1.fields, ...schema.step2.fields];
+
+    allFields.forEach(field => {
+        const value = formData[field.id] || '';
+        if (field.required && !value) {
+            allErrors[field.id] = `${field.label} is required.`;
+        } else if (field.validation && value && !new RegExp(field.validation.regex).test(value)) {
+            allErrors[field.id] = field.validation.message;
+        }
+    });
+
+    setErrors(allErrors);
+    return Object.keys(allErrors).length === 0;
+  };
+
+
   const handleNext = () => {
     if (validateStep(1)) {
       setCurrentStep(2);
@@ -54,7 +72,7 @@ function App() {
 
   const handleChange = (e) => {
     let { name, value } = e.target;
-    if (name === 'txtPanNo') {
+    if (name === schema.step2.fields[1].id) { // Dynamically check for PAN field ID
       value = value.toUpperCase();
     }
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -65,16 +83,22 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateStep(2)) return;
+    if (!validateAllFields()) {
+        if (schema.step1.fields.some(field => errors[field.id])) {
+            setCurrentStep(1);
+        }
+        return;
+    }
 
     setIsSubmitting(true);
     setServerMessage(null);
 
+    // THIS IS THE FIX: Use the correct dynamic IDs from the schema to build the submission data.
     const submissionData = {
-        aadhaarNumber: formData.txtAadhaarNo,
-        nameAsPerAadhaar: formData.txtNameAsPerAadhaar,
-        orgType: formData.ddlOrgType,
-        panNumber: formData.txtPanNo
+        aadhaarNumber: formData[schema.step1.fields[0].id],
+        nameAsPerAadhaar: formData[schema.step1.fields[1].id],
+        orgType: formData[schema.step2.fields[0].id],
+        panNumber: formData[schema.step2.fields[1].id]
     };
 
     try {
@@ -87,7 +111,11 @@ function App() {
         const result = await response.json();
 
         if (!response.ok) {
-            throw new Error(result.message || `HTTP error! status: ${response.status}`);
+            let detailedError = result.message || `HTTP error! status: ${response.status}`;
+            if (result.errors) {
+                detailedError = Object.values(result.errors).join(' ');
+            }
+            throw new Error(detailedError);
         }
         
         setServerMessage({ type: 'success', text: result.message });
@@ -161,4 +189,5 @@ function App() {
     </div>
   );
 }
+
 export default App;
