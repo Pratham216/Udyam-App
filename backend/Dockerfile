@@ -13,12 +13,13 @@ RUN npm install
 # Copy the rest of your application code
 COPY . .
 
-# We have REMOVED "RUN npx prisma generate" from here.
+# Generate the Prisma Client
+RUN npx prisma generate
 
 # Expose the port the app runs on
 EXPOSE 5000
 
 # THIS IS THE FIX:
-# Run prisma generate right before starting the server.
-# This uses the runtime DATABASE_URL.
-CMD ["sh", "-c", "npx prisma generate && node server.js"]
+# Run the database migration and then start the server.
+# "prisma migrate deploy" is the correct command for production environments.
+CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
