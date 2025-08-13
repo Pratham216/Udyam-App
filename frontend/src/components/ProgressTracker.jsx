@@ -1,5 +1,4 @@
 import React from 'react';
-
 const ProgressTracker = ({ currentStep }) => {
   const steps = ['Aadhaar Validation', 'PAN Validation'];
   return (

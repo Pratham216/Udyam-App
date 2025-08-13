@@ -1,131 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import FormStep1 from './components/FormStep1.jsx';
+import FormStep2 from './components/FormStep2.jsx';
+import ProgressTracker from './components/ProgressTracker.jsx';
+import './index.css';
 
-// We are putting all components in one file to ensure there are no import/export issues.
-
-//+++++++++++++ ProgressTracker Component +++++++++++++
-const ProgressTracker = ({ currentStep }) => {
-  const steps = ['Aadhaar Validation', 'PAN Validation'];
-  return (
-    <div className="w-full max-w-md mx-auto mb-8">
-      <div className="flex items-start">
-        {/* Step 1 */}
-        <div className="flex flex-col items-center text-center w-28">
-          <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold transition-colors duration-300 z-10 ${
-              currentStep >= 1 ? 'bg-blue-600' : 'bg-gray-400'
-            }`}
-          >
-            1
-          </div>
-          <p className={`mt-2 text-xs font-semibold ${currentStep >= 1 ? 'text-blue-600' : 'text-gray-500'}`}>{steps[0]}</p>
-        </div>
-
-        {/* Connector */}
-        <div className="flex-1 h-1 bg-gray-300 mt-5 relative">
-          <div
-            className="h-1 bg-blue-600 absolute top-0 left-0 transition-all duration-500"
-            style={{ width: currentStep > 1 ? '100%' : '0%' }}
-          ></div>
-        </div>
-
-        {/* Step 2 */}
-        <div className="flex flex-col items-center text-center w-28">
-          <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold transition-colors duration-300 z-10 ${
-              currentStep >= 2 ? 'bg-blue-600' : 'bg-gray-400'
-            }`}
-          >
-            2
-          </div>
-          <p className={`mt-2 text-xs font-semibold ${currentStep >= 2 ? 'text-blue-600' : 'text-gray-500'}`}>{steps[1]}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-
-//+++++++++++++ FormStep1 Component +++++++++++++
-const FormStep1 = ({ schema, formData, handleChange, errors }) => {
-  if (!schema) return <p>Loading schema...</p>;
-
-  return (
-    <div className="space-y-6 animate-fadeIn">
-      <h2 className="text-xl font-bold text-gray-800 text-center border-b pb-4">{schema.title}</h2>
-      {schema.fields.map(field => (
-        <div key={field.id}>
-          <label htmlFor={field.id} className="block text-sm font-medium text-gray-700 mb-1">
-            {field.label} <span className="text-red-500">*</span>
-          </label>
-          <input
-            type={field.type}
-            id={field.id}
-            name={field.id}
-            value={formData[field.id] || ''}
-            onChange={handleChange}
-            placeholder={field.placeholder}
-            className={`w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors[field.id] ? 'border-red-500 ring-red-500' : 'border-gray-300'
-            }`}
-          />
-          {errors[field.id] && <p className="mt-1 text-xs text-red-600">{errors[field.id]}</p>}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-
-//+++++++++++++ FormStep2 Component +++++++++++++
-const FormStep2 = ({ schema, formData, handleChange, errors }) => {
-    if (!schema) return <p>Loading schema...</p>;
-
-    return (
-        <div className="space-y-6 animate-fadeIn">
-            <h2 className="text-xl font-bold text-gray-800 text-center border-b pb-4">{schema.title}</h2>
-            {schema.fields.map(field => (
-                <div key={field.id}>
-                    <label htmlFor={field.id} className="block text-sm font-medium text-gray-700 mb-1">
-                        {field.label} <span className="text-red-500">*</span>
-                    </label>
-                    {field.type === 'select' ? (
-                        <select
-                            id={field.id}
-                            name={field.id}
-                            value={formData[field.id] || ''}
-                            onChange={handleChange}
-                             className={`w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                                errors[field.id] ? 'border-red-500 ring-red-500' : 'border-gray-300'
-                            }`}
-                        >
-                            {field.options.map(option => (
-                                <option key={option} value={option === field.options[0] ? '' : option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                    ) : (
-                        <input
-                            type={field.type}
-                            id={field.id}
-                            name={field.id}
-                            value={formData[field.id] || ''}
-                            onChange={handleChange}
-                            placeholder={field.placeholder}
-                            className={`w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                                errors[field.id] ? 'border-red-500 ring-red-500' : 'border-gray-300'
-                            }`}
-                        />
-                    )}
-                    {errors[field.id] && <p className="mt-1 text-xs text-red-600">{errors[field.id]}</p>}
-                </div>
-            ))}
-        </div>
-    );
-};
-
-
-//+++++++++++++ Main App Component +++++++++++++
 function App() {
   const [currentStep, setCurrentStep] = useState(1);
   const [schema, setSchema] = useState(null);
@@ -135,12 +13,15 @@ function App() {
   const [serverMessage, setServerMessage] = useState(null);
 
   useEffect(() => {
-    // In a real Vite app, you'd fetch this. For this example, we'll define it here.
-    const formSchemaData = {
-        "step1": { "title": "Aadhaar Verification", "fields": [ { "id": "txtAadhaarNo", "name": "txtAadhaarNo", "label": "Aadhaar Number", "type": "text", "placeholder": "Enter 12 digit Aadhaar Number", "required": true, "validation": { "regex": "^[2-9]{1}[0-9]{11}$", "message": "Aadhaar must be a 12-digit number." } }, { "id": "txtNameAsPerAadhaar", "name": "txtNameAsPerAadhaar", "label": "Name as per Aadhaar", "type": "text", "placeholder": "Enter Name as per Aadhaar", "required": true, "validation": { "regex": "^[a-zA-Z\\s.]+$", "message": "Name should only contain alphabets and spaces." } } ] },
-        "step2": { "title": "PAN Verification", "fields": [ { "id": "ddlOrgType", "name": "ddlOrgType", "label": "Type of Organisation", "type": "select", "options": ["Select Type of Organisation", "Proprietory", "Partnership", "Hindu Undivided Family", "Private Limited Company", "Public Limited Company", "Self Help Group", "Limited Liability Partnership", "Society/Co-operative", "Trust", "Others"], "required": true }, { "id": "txtPanNo", "name": "txtPanNo", "label": "PAN", "type": "text", "placeholder": "Enter PAN Number", "required": true, "validation": { "regex": "^[A-Z]{5}[0-9]{4}[A-Z]{1}$", "message": "Invalid PAN format." } } ] }
-    };
-    setSchema(formSchemaData);
+    fetch('/form_schema.json')
+      .then(res => res.json())
+      .then(data => {
+        setSchema(data);
+      })
+      .catch(err => {
+        console.error("Failed to load form schema:", err);
+        setServerMessage({ type: 'error', text: 'Could not load form configuration.' });
+      });
   }, []);
 
   const validateStep = (step) => {
@@ -182,7 +63,6 @@ function App() {
     }
   };
 
-  // THIS IS THE CORRECTED SUBMISSION HANDLER
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateStep(2)) return;
@@ -207,14 +87,10 @@ function App() {
         const result = await response.json();
 
         if (!response.ok) {
-            // Use the error message from the backend
             throw new Error(result.message || `HTTP error! status: ${response.status}`);
         }
         
         setServerMessage({ type: 'success', text: result.message });
-        // Optionally reset form here
-        // setFormData({});
-        // setCurrentStep(1);
 
     } catch (error) {
         setServerMessage({ type: 'error', text: error.message });
@@ -249,6 +125,7 @@ function App() {
                 {currentStep === 2 && schema && (
                   <FormStep2 schema={schema.step2} formData={formData} handleChange={handleChange} errors={errors} />
                 )}
+                {!schema && !serverMessage && <p className="text-center text-gray-500">Loading form configuration...</p>}
               </div>
               
               <div className="mt-8 pt-6 border-t flex justify-between items-center">
@@ -284,5 +161,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

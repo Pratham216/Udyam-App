@@ -33,7 +33,6 @@ const FormStep2 = ({ schema, formData, handleChange, errors }) => {
                             id={field.id}
                             name={field.id}
                             value={formData[field.id] || ''}
-                            // THIS IS THE FIX: Using the main handleChange directly
                             onChange={handleChange}
                             placeholder={field.placeholder}
                             className={`w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
