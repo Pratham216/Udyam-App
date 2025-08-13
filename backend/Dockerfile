@@ -13,11 +13,12 @@ RUN npm install
 # Copy the rest of your application code
 COPY . .
 
-# Run Prisma generate
-RUN npx prisma generate
+# We have REMOVED "RUN npx prisma generate" from here.
 
 # Expose the port the app runs on
 EXPOSE 5000
 
-# The command to run your application
-CMD [ "node", "server.js" ]
+# THIS IS THE FIX:
+# Run prisma generate right before starting the server.
+# This uses the runtime DATABASE_URL.
+CMD ["sh", "-c", "npx prisma generate && node server.js"]
