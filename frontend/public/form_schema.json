@@ -1,0 +1,74 @@
+{
+  "step1": {
+    "title": "Aadhaar Verification",
+    "fields": [
+      {
+        "id": "ctl00_ContentPlaceHolder1_txtAadhaarNo",
+        "name": "ctl00$ContentPlaceHolder1$txtAadhaarNo",
+        "label": "Aadhaar Number",
+        "type": "text",
+        "placeholder": "Your Aadhaar No",
+        "required": true,
+        "validation": {
+          "regex": "^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$",
+          "message": "Aadhaar should be a 12-digit number and not start with 0 or 1."
+        }
+      },
+      {
+        "id": "ctl00_ContentPlaceHolder1_txtNameAsPerAadhaar",
+        "name": "ctl00$ContentPlaceHolder1$txtNameAsPerAadhaar",
+        "label": "Name of Entrepreneur",
+        "type": "text",
+        "placeholder": "Name as per Aadhaar",
+        "required": true,
+        "validation": {
+          "regex": "^[a-zA-Z\\s.]+$",
+          "message": "Name should only contain alphabets and spaces."
+        }
+      }
+    ],
+    "button": {
+      "id": "ctl00_ContentPlaceHolder1_btnValidate",
+      "text": "Validate & Generate OTP"
+    }
+  },
+  "step2": {
+    "title": "PAN Verification",
+    "fields": [
+      {
+        "id": "ctl00_ContentPlaceHolder1_ddlOrgType",
+        "name": "ctl00$ContentPlaceHolder1$ddlOrgType",
+        "label": "Type of Organisation",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Proprietory",
+          "Partnership",
+          "Limited Liability Partnership",
+          "Private Limited Company",
+          "Public Limited Company",
+          "Self Help Group",
+          "Society/Co-operative",
+          "Trust",
+          "Hindu Undivided Family(HUF)"
+        ]
+      },
+      {
+        "id": "ctl00_ContentPlaceHolder1_txtPanNo",
+        "name": "ctl00$ContentPlaceHolder1$txtPanNo",
+        "label": "PAN",
+        "type": "text",
+        "placeholder": "",
+        "required": true,
+        "validation": {
+          "regex": "^[A-Z]{5}[0-9]{4}[A-Z]{1}$",
+          "message": "Invalid PAN format. It should be in the format ABCDE1234F."
+        }
+      }
+    ],
+    "button": {
+      "id": "ctl00_ContentPlaceHolder1_btnValidatePan",
+      "text": "Validate PAN"
+    }
+  }
+}

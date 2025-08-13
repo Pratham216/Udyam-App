@@ -1,0 +1,21 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // This tells Prisma to get the URL from the .env file
+}
+
+// Define the table for your form submissions
+model Registration {
+  id               Int      @id @default(autoincrement())
+  createdAt        DateTime @default(now())
+  aadhaarNumber    String   @unique // Aadhaar should be unique
+  nameAsPerAadhaar String
+  orgType          String
+  panNumber        String   @unique // PAN should also be unique
+}
